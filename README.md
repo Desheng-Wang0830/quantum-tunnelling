@@ -34,7 +34,7 @@ substantially more expensive.
 | `N=2,sys,g=0.3.zip` | Same-sign mirror-symmetric two-layer result: final MAT and restart checkpoint |
 | `N=3,g=0.3.zip` | Same-sign mirror-symmetric three-layer result: final MAT and restart checkpoint |
 | `N=2,asys,g=0.3,-0.3.zip` | Mixed-sign barrier–well dimer: final MAT and restart checkpoint |
-| `chapter6_data_set.zip` | Combined plotting scripts and the rendered thesis figures |
+| `chapter5_data_set.zip` | Combined plotting scripts and the rendered thesis figures |
 
 The historical filenames beginning with `chapter6_` were retained after the
 numerical-results chapter was renumbered. They correspond to the results
