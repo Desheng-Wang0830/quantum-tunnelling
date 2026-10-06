@@ -4,11 +4,12 @@ This repository contains the MATLAB source code, archived numerical results,
 plotting utilities, and validation material accompanying Desheng Wang's MSc
 thesis on scalar-field tunnelling through finite arrays of planar delta layers.
 
-The calculation retains the elastic correction through strict
-\(O(\mu^2)\). The background scattering problem is treated exactly for a
-finite delta array, while the loop contribution is assembled from the four
-implemented placements \(G_1\)–\(G_4\) under the prescription stated in the
-thesis.
+The calculation retains the internal-background sector through strict
+\(O(\mu^2)\): the internal light-field line scatters from the array, with
+exact background scattering on either external leg. The four placements
+\(G_1\)–\(G_4\) are summed. Vacuum self-energy terms, background-induced
+tadpoles and counterterms are omitted, so this is not the complete
+renormalised order-\(\mu^2\) correction.
 
 ## Start here
 
@@ -30,7 +31,8 @@ substantially more expensive.
 | Archive | Contents and purpose |
 |---|---|
 | `N_delta_1loop_correction.zip` | MATLAB driver 1.3.0, post-processing 1.3.0, numerical engine 1.9.6, validation suite, and the post-freeze heavy-mass driver |
-| `N=1,g=0.3.zip` | Centred single-layer result, final MAT, restart checkpoint, CSV tables, and individual plots |
+| `N=1,g=0.3.zip` | Centred repulsive single-layer result, final MAT, restart checkpoint, CSV tables, and individual plots |
+| `N=1,g=-0.3.zip` | Centred attractive single-layer result at \(\mu=0.1\), on the same 200-point energy grid; source data for Appendix C |
 | `N=2,sys,g=0.3.zip` | Same-sign mirror-symmetric two-layer result: final MAT and restart checkpoint |
 | `N=3,g=0.3.zip` | Same-sign mirror-symmetric three-layer result: final MAT and restart checkpoint |
 | `N=2,asys,g=0.3,-0.3.zip` | Mixed-sign barrier–well dimer: final MAT and restart checkpoint |
@@ -65,10 +67,16 @@ All four primary scans use
 | C3 | \(N=3\), same sign | `[-6, 0, 6]` | `[0.3, 0.3, 0.3]` | 200/200 completed and accepted |
 | C4 | \(N=2\), mixed sign | `[-6, 6]` | `[0.3, -0.3]` | 200/200 completed and accepted |
 
-The value \(\mu=3\) is a display choice used to make the retained correction
-visible in the thesis figures. Because the formulas are truncated at strict
-\(O(\mu^2)\), algebraic \(\mu^2\) rescaling does not by itself bound omitted
-\(O(\mu^4)\) terms or establish perturbative convergence.
+The four primary archives store corrections at \(\mu=3\). Dividing these
+corrections by \(900=(3/0.1)^2\) gives the reported \(\mu=0.1\) corrections.
+The thesis overlay therefore uses the explicit magnification
+\(T_0+\lambda\Delta T\) with \(\lambda=900\), rather than treating the
+\(\mu=3\) curve as a controlled physical prediction. The heavy-mass figure
+plots \(|\Delta T|/(\mu/M_*)^2\), where \(M_*\) is the mass unit; the
+stored \(\mu=3\) data are divided by 9. Because the formulas are truncated
+at strict \(O(\mu^2)\), this rescaling does not bound omitted higher orders
+or establish perturbative convergence. The separate attractive single-layer
+archive already uses \(\mu=0.1\) and must not be divided by 900.
 
 For these explicit-geometry runs, the authoritative geometry is stored in
 `result.profile.positions`, `result.profile.strengths`, and the corresponding
@@ -97,7 +105,9 @@ Allow at least 1 GB of free space when extracting all four data archives.
 
 ## Recommended extraction layout
 
-Download all six ZIP files, then arrange the extracted material as follows.
+Download the six ZIP files needed for the four primary cases; also download
+`N=1,g=-0.3.zip` for the attractive-layer source check. Arrange the primary
+case material as follows.
 The names `chapter6_work` and `chapter6_figures` are only working-directory
 names and may be changed.
 
@@ -243,7 +253,7 @@ internal expectation that the input archive is named `chapter6数据.zip`.
 
 ### Heavy-mass archived result and full rerun
 
-The heavy-mass directory contains the numerical source of Figure 5.5, not
+The heavy-mass directory contains the numerical source of Figure 5.7, not
 only its rendered image. The MAT and CSV files record 26 completed masses
 (25 logarithmically spaced values over \(0.5\leq m_\Phi\leq10^6\), plus the
 inserted reference \(m_\Phi=1.4\)), signed \(\Delta T\) and \(\Delta R\), the
@@ -415,10 +425,24 @@ The non-passing gates are:
 |---|---|
 | R03, \(N=1\) analytic/numerical regression | The exact tree, \(\Gamma/\tau\), compact \(G_2\)–\(G_4\), probability, and collective-mode checks pass; the numerical \(G_1\) golden-kernel error is \(2.4668\times10^{-7}\), above the \(10^{-7}\) gate |
 | R06, heavy-mass decoupling | The decreasing trend, fitted slopes, monotonicity, mapping-scale check, and loop closure pass; the largest masswise quadrature error is \(1.2677\times10^{-6}\), above the \(10^{-6}\) gate |
-| R08, mapped-infinite versus finite-cutoff | The inner \(q_4\) comparison passes; the independent outer-\(q_\perp\) finite-cutoff comparison has not reached the required tail plateau |
+| R08, mapped-infinite versus finite-cutoff | The inner \(q_4\) comparison passes. The outer mapped-versus-cutoff mixed error is \(4.0369\times10^{-5}\), and changing the outer cutoff from 64 to 128 gives \(1.3155\times10^{-4}\); both exceed the \(10^{-6}\) gate |
 
 The completion marker means that the suite finished and wrote its reports; it
 does not mean that every gate passed.
+
+R08 tests the Euclidean contribution of \(G_1\) in transmission and reflection
+for one repulsive layer at \(E=0.30\), \(g=0.3\), \(m_\phi=0.2\),
+\(m_\Phi=1.4\). Its mixed metric is the maximum of
+`abs(a-b)/max(1e-4,abs(a),abs(b))`. It is not a relative-error bound for the
+full probability correction or for all array energies. The finite-cutoff tail
+test remains open; passing later quadrature-order comparisons does not by
+itself resolve it.
+
+The thesis source bundle separately supplies
+`SUPPLEMENTARY_REPRODUCTION_README.md` and the `verification/` folders used in
+Appendices C and E. They are supplementary files submitted with the thesis,
+not paths in this production-code repository. The archived report is an
+August 2026 run; documenting its failures does not constitute a new run.
 
 ### Source-manifest note for the public code ZIP
 
@@ -494,7 +518,7 @@ sha256sum N_delta_1loop_correction.zip
    is archived, however, so the regression standard error does not bound
    quadrature, cancellation, or mapped-tail systematics at
    \(|\Delta T|\sim10^{-13}\). The independent R06 three-mass validation is a
-   separate test rather than the source data for Figure 5.5.
+   separate test rather than the source data for Figure 5.7.
 
    The archive also does not contain a single script that assembles every
    panel of the final composite ledger figures. Replotting produces the
@@ -557,3 +581,4 @@ If these materials are used, please cite the accompanying MSc thesis and
 record the exact Git commit or release tag together with the archive SHA-256
 values above. The repository is maintained at
 <https://github.com/Desheng-Wang0830/quantum-tunnelling>.
+
